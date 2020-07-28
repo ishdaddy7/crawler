@@ -9,6 +9,7 @@ const config = require('../config');
 
 
 module.exports = async () => {
+	//don't force true before saving the vendor table!!
 	console.log('starting job');
 	//let jobUrl = 'https://www.mediamath.com/'
 	//let jobUrl = 'https://www.omen.com/us/en.html';
