@@ -1,0 +1,8 @@
+/node_modules
+.env
+config.js
+/database/dbconfig.js
+/database/vendorList.js
+/app/cookies.json
+log.txt
+.DS_Store
