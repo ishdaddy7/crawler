@@ -17,7 +17,7 @@ class Job {
 
 class JobUrl {
 	constructor(name, url, acceptedCookies=false, jobId, status='Pending', note) {
-		this.name = name;
+		this.name = name.trim().substr(0,50);
 		this.url = url;
 		this.acceptedCookies = acceptedCookies;
 		this.jobId = jobId;

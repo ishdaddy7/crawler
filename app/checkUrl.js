@@ -55,6 +55,16 @@ module.exports = async (advUrl, jobUrlId) => {
         console.log('couldn\'t find an accept button or link')
     }
 
+    //check for mParticle
+    let mParticle;
+    try {
+        mParticle = await page.evaluate(() => mParticle);
+        console.log(mParticle)
+    } catch (e) {
+        console.log('mParticle not found');
+    }
+    
+
     //save cookies
     const cookies = await page.cookies();
     await fs.writeFile('./cookies.json', JSON.stringify(cookies, null, 2));
