@@ -10,29 +10,9 @@ module.exports = db.define('jobUrlVendor', {
 		autoIncrement: true,
 		allowNull: false
 	},
-	vendorUrl: {
+	url: {
 		type: DataTypes.STRING(2048),
 		allowNull: true		
-	},
-	vendorDomain: {
-		type: DataTypes.STRING,
-		allowNull: true
-	},
-	vendorName: {
-		type: DataTypes.STRING,
-		allowNull: true
-	},
-	t1VendorId: {
-		type: DataTypes.STRING,
-		allowNull: true
-	},
-	vendorType: {
-		type: DataTypes.STRING,
-		allowNull: true
-	},
-	vendorParty: {
-		type: DataTypes.ENUM('first_party', 'third_party'),
-		allowNull: true
 	},
 	responseDateTime: {
 		type: DataTypes.STRING,

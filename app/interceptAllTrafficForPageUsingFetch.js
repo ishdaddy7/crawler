@@ -2,7 +2,9 @@ const pd = require('parse-domain');
 const vendors = require('../database/vendorList');
 const classes = require('../utils/classes');
 const db = require('../database/');
+const JobUrl = db.model('jobUrl');
 const JobUrlVendor = db.model('jobUrlVendor');
+const Vendor = db.model('vendor');
 const getDomain = require('../utils/getDomain');
 /**
  * Captures all traffic including from Web Workers, does something with it, and continues the request
@@ -31,38 +33,62 @@ module.exports = async (page, advUrl, jobUrlId) => {
 
             if (vendorDomain) {
                 try {
-                    let vendorDetails;
+                    //look for existing vendor
+                    let vendorRecord = await Vendor.findOne({
+                        where: {
+                            domain: vendorDomain
+                        }
+                    });
 
-                    //distinguish same domain requests from 3p ones
-                    if(advDomain === vendorDomain) {
-                        vendorDetails = new classes.JobUrlVendor(
-                            //headers.Referer,
-                            url,
+                    //add vendor if missing
+                    if (!vendorRecord) {
+                        let party = 'third_party';
+                        if (advDomain === vendorDomain) party = 'first_party';
+                        let newVendor = new classes.Vendor(
+                            'TBD', //name
                             vendorDomain,
-                            'first_party_request',
-                            '-1',
-                            'first_party',
-                            'first_party',
-                            responseDateTime,
-                            jobUrlId
-                        );
+                            null, //t1Id
+                            party, 
+                            'TBD', // type1
+                            'TBD', // type2
+                            'TBD', // type3
+                            null, // note
+                            true, // current
+                            false // corrected
+                        )
+                        try {
+                            console.log('adding new vendor', vendorDomain)
+                            vendorRecord = await Vendor.create(newVendor);
+                        } catch (e) {
+                            console.log('vendor already exists', vendorDomain)
+                        }
                     } else {
-                        const t1Vendor = vendors[vendorDomain] || {};
-                        const {name, id, vendor_type} = t1Vendor;
-                        vendorDetails = new classes.JobUrlVendor(
-                            //headers.Referer,
-                            url,
-                            vendorDomain,
-                            name,
-                            id,
-                            vendor_type,
-                            'third_party',
-                            responseDateTime,
-                            jobUrlId
-                        );
+                        //mark as current (to filter out noise from t1 list)
+                        console.log('updating existing record')  
+                        if(!vendorRecord.current) {
+                            try {
+                                vendorRecord.current = true;
+                                await vendorRecord.save();
+                                console.log('vendor current saved!', vendorDomain)
+                            }
+                            catch (e) {
+                                console.log('could not save record', vendorDomain, e)
+                            }
+                        }
                     }
+
+                    let jobUrlVendor;
+                    let vendorId = vendorRecord.id;
+
+                    jobUrlVendor = new classes.JobUrlVendor(
+                        //headers.Referer,
+                        url,
+                        responseDateTime,
+                        jobUrlId,
+                        vendorId
+                    );
                     //write to db
-                    await JobUrlVendor.create(vendorDetails);
+                    await JobUrlVendor.create(jobUrlVendor);
                 } catch(e) {
                     console.log('error', e, vendorDomain);
                 }
