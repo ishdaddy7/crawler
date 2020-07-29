@@ -36,9 +36,9 @@ class JobUrlVendor {
 }
 
 class Vendor {
-	constructor(name, domain, t1Id, party, type1, type2, type3, note, current=false, corrected=false) {
+	constructor(name, hostName, t1Id, party, type1, type2, type3, note, current=false, corrected=false) {
 		this.name = name;
-		this.domain = domain;
+		this.hostName = hostName;
 		this.t1Id = t1Id;
 		this.party = party;
 		this.type1 = type1;
@@ -50,9 +50,19 @@ class Vendor {
 	}
 }
 
+class T1Vendor {
+	constructor(name, domain, t1Id, type1) {
+		this.name = name;
+		this.domain = domain;
+		this.t1Id = t1Id;
+		this.type1 = type1;
+	}
+}
+
 module.exports = {
 	Job,
 	JobUrl,
 	JobUrlVendor,
-	Vendor
+	Vendor,
+	T1Vendor
 }

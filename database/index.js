@@ -1,6 +1,7 @@
 'use strict';
 var db = require('./_db');
 
+const T1Vendor = require('./models/t1Vendor');
 const Vendor = require('./models/vendor')
 const Job = require('./models/job');
 const JobUrl = require('./models/jobUrl');

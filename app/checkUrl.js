@@ -59,7 +59,7 @@ module.exports = async (advUrl, jobUrlId) => {
     let mParticle;
     try {
         mParticle = await page.evaluate(() => mParticle);
-        console.log(mParticle)
+        console.log('mParticle found')
     } catch (e) {
         console.log('mParticle not found');
     }
