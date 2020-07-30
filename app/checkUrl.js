@@ -2,6 +2,10 @@ const puppeteer = require('puppeteer');
 const preparePageForTests = require('../utils/preparePageForTests');
 const fs = require('fs').promises;
 const interceptAllTrafficForPageUsingFetch = require('./interceptAllTrafficForPageUsingFetch');
+const db = require('../database/');
+const classes = require('../utils/classes');
+const JobUrlVendor = db.model('jobUrlVendor');
+
 /**
  * Launches a puppeteer controlled Chrome and intercepts all traffic.
  */
@@ -49,7 +53,7 @@ module.exports = async (advUrl, jobUrlId) => {
             urlAcceptedCookies = true;
             console.log('clicked!');
         } catch(e) {
-            console.log(advUrl, 'couldn\'nt click accept cookies. either clicked already/hidden, or rendered too slow');
+            console.log(advUrl, 'couldn\'t click accept cookies. either clicked already/hidden, or rendered too slow');
         }
     } else {
         console.log('couldn\'t find an accept button or link')
@@ -58,13 +62,23 @@ module.exports = async (advUrl, jobUrlId) => {
     //check for mParticle
     let mParticle;
     try {
+        let mParticleVendor = await Vendor.findOne({
+            where: {
+                hostName: 'xxx.mparticle.xxx'
+            }
+        });
+
         mParticle = await page.evaluate(() => mParticle);
-        console.log('mParticle found')
+        let jobUrlVendor = new classes.JobUrlVendor(
+            null, //url
+            null, //responseDateTime
+            jobUrlId,
+            mParticleVendor.id //mParticle vendorId
+        )
     } catch (e) {
         console.log('mParticle not found');
     }
     
-
     //save cookies
     const cookies = await page.cookies();
     await fs.writeFile('./cookies.json', JSON.stringify(cookies, null, 2));

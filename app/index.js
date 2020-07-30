@@ -12,8 +12,8 @@ module.exports = async () => {
 	console.log('starting job');
 	//let jobUrl = 'https://www.mediamath.com/'
 	//let jobUrl = 'https://www.omen.com/us/en.html';
-	let jobUrl = 'https://www.bmw.com/en/index.html';
-	//let jobUrl = 'https://www8.hp.com/us/en/home.html';
+	//let jobUrl = 'https://www.bmw.com/en/index.html';
+	let jobUrl = 'https://www8.hp.com/us/en/home.html';
 	//let jobUrl = 'https://www.chewy.com/'
 	//let jobUrl = 'https://www.aldi.us/';
 	//create new job in db

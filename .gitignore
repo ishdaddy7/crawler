@@ -2,7 +2,7 @@
 .env
 config.js
 cookies.json
-log.txt
+*.txt
 .DS_Store
 /database/dbconfig.js
 /database/vendorList.js

@@ -10,7 +10,7 @@ const getDomain = (url, returnHost) => {
     let subDomains = 'unknown';
 
   	if (domainInfo.domain || domainInfo.topLevelDomains) {
-        subDomains = domainInfo.subDomains.join(',');
+        subDomains = domainInfo.subDomains.join('.');
         tld = domainInfo.topLevelDomains.join('.');
         domain = domainInfo.domain;
 	} else {
