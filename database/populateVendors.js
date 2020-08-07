@@ -3,7 +3,7 @@
 const vendorList = require('./vendorList');
 const classes = require('../utils/classes');
 const db = require('../database');
-const Vendor = db.model('vendor');
+const T1Vendor = db.model('t1Vendor');
 
 let run = async () => {
 	try {
@@ -14,21 +14,15 @@ let run = async () => {
 	Object.keys(vendorList).forEach(async (vendorDomain) => {
 		let t1Vendor = vendorList[vendorDomain];
 
-		let newRecord = new classes.Vendor(
+		let newRecord = new classes.T1Vendor(
 			t1Vendor.name,
 			vendorDomain,
 			t1Vendor.id,
-			'third_party',
-			t1Vendor.vendor_type,
-			undefined,
-			undefined,
-			undefined,
-			false,
-			false
+			t1Vendor.vendor_type
 		);
 
 		try {
-			await Vendor.create(newRecord);
+			await T1Vendor.create(newRecord);
 		} catch(e) {
 			console.log(e)
 		}	

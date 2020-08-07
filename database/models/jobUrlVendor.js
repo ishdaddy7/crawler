@@ -11,7 +11,7 @@ module.exports = db.define('jobUrlVendor', {
 		allowNull: false
 	},
 	url: {
-		type: DataTypes.STRING(2048),
+		type: DataTypes.STRING,
 		allowNull: true		
 	},
 	responseDateTime: {

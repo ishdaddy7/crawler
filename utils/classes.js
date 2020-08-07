@@ -1,10 +1,11 @@
 
 class Job {
-	constructor(name, url, numLinksToSniff, jobType, internalId, internalIdType, status='Pending', note, acceptedCookies=false, linkCount=0) {
+	constructor(name, url, numLinksToSniff, jobType, jobTypeName, internalId, internalIdType, status='Pending', note, acceptedCookies=false, linkCount=0) {
 		this.name = name;
 		this.url = url;
 		this.numLinksToSniff = numLinksToSniff;
 		this.jobType = jobType;
+		this.jobTypeName = jobTypeName;
 		this.internalId = internalId;
 		this.internalIdType = internalIdType;
 		this.status = status;
@@ -17,8 +18,8 @@ class Job {
 
 class JobUrl {
 	constructor(name, url, acceptedCookies=false, jobId, status='Pending', note) {
-		this.name = name;
-		this.url = url;
+		this.name = name.trim().substr(0,50);
+		this.url = url.trim().substr(0,255);
 		this.acceptedCookies = acceptedCookies;
 		this.jobId = jobId;
 		this.status = status;
@@ -28,7 +29,7 @@ class JobUrl {
 
 class JobUrlVendor {
 	constructor(url, responseDateTime, jobUrlId, vendorId) {
-		this.url = url;
+		this.url = url.trim().substr(0,255);
 		this.responseDateTime = responseDateTime;
 		this.jobUrlId = jobUrlId;
 		this.vendorId = vendorId
@@ -36,9 +37,9 @@ class JobUrlVendor {
 }
 
 class Vendor {
-	constructor(name, domain, t1Id, party, type1, type2, type3, note, current=false, corrected=false) {
+	constructor(name, hostName, t1Id, party, type1, type2, type3, note, current=false, corrected=false) {
 		this.name = name;
-		this.domain = domain;
+		this.hostName = hostName;
 		this.t1Id = t1Id;
 		this.party = party;
 		this.type1 = type1;
@@ -50,9 +51,19 @@ class Vendor {
 	}
 }
 
+class T1Vendor {
+	constructor(name, domain, t1Id, type1) {
+		this.name = name;
+		this.domain = domain.trim().substr(0,255);
+		this.t1Id = t1Id;
+		this.type1 = type1;
+	}
+}
+
 module.exports = {
 	Job,
 	JobUrl,
 	JobUrlVendor,
-	Vendor
+	Vendor,
+	T1Vendor
 }

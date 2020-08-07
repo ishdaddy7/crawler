@@ -1,8 +1,9 @@
+/jobs
 /node_modules
 .env
 config.js
+cookies.json
+*.txt
+.DS_Store
 /database/dbconfig.js
 /database/vendorList.js
-/app/cookies.json
-log.txt
-.DS_Store

@@ -4,7 +4,7 @@ const db = require('../_db');
 const DataTypes = db.Sequelize;
 
 
-module.exports = db.define('jobUrl', {
+module.exports = db.define('t1Vendor', {
 	id: {
 		type: DataTypes.INTEGER,
 		primaryKey: true,
@@ -15,21 +15,17 @@ module.exports = db.define('jobUrl', {
 		type: DataTypes.STRING,
 		allowNull: true
 	},
-	url: {
+	domain: {
 		type: DataTypes.STRING,
-		allowNull: false		
+		allowNull: false,
+		unique: true
 	},
-	acceptedCookies: {
-		type: DataTypes.BOOLEAN,
-		allowNull: false
-	},
-	status: {
-		type: DataTypes.ENUM('Pending', 'Complete', 'Error'),
-		allowNull: false
-	},
-	note: {
-		type: DataTypes.STRING,
+	t1Id: {
+		type: DataTypes.INTEGER,
 		allowNull: true
+	},
+	type1: {
+		type: DataTypes.STRING,
+		allowNull: false
 	}
 });
-

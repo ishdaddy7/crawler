@@ -1,28 +1,17 @@
 const getAllLinks = require('./getAllLinks');
 const checkUrl = require('./checkUrl');
 const db = require('../database');
-const classes = require('../utils/classes')
 const Job = db.model('job');
 const JobUrl = db.model('jobUrl');
 const fs = require('fs').promises;
 const config = require('../config');
 
-
-module.exports = async () => {
+module.exports = async (job) => {
 	//don't force true before saving the vendor table!!
 	console.log('starting job');
-	//let jobUrl = 'https://www.mediamath.com/'
-	//let jobUrl = 'https://www.omen.com/us/en.html';
-	//let jobUrl = 'https://www.bmw.com/en/index.html';
-	let jobUrl = 'https://www8.hp.com/us/en/home.html';
+	let jobUrl = job.url;
+	
 	//create new job in db
-	let job = new classes.Job(
-		'HP US',
-		jobUrl,
-		config.numLinksToSniff,
-		'Prospect'
-	);
-
 	let jobRecord = await Job.create(job);
 	let jobRecordId = jobRecord.id;
 
@@ -32,7 +21,7 @@ module.exports = async () => {
 	} catch(e) {
 		console.log(e);
 	}
-
+	
 	try {
 		let links = await getAllLinks(jobUrl, jobRecordId);
 
@@ -78,6 +67,7 @@ module.exports = async () => {
 			{status: 'Error', note: e.toString()},
 			{where: {id: jobRecordId}}
 		);
+		process.exit();
 	}
 	console.log('finishing job');
 };

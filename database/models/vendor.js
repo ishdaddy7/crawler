@@ -16,13 +16,13 @@ module.exports = db.define('vendor', {
 		allowNull: true
 	},
 	domain: {
-		type: DataTypes.STRING(1024),
+		type: DataTypes.STRING,
 		allowNull: false,
 		unique: true
 	},
 	t1Id: {
 		type: DataTypes.INTEGER,
-		allowNull: true
+		allowNull: false
 	},
 	party: {
 		type: DataTypes.ENUM('first_party', 'third_party'),
@@ -48,8 +48,8 @@ module.exports = db.define('vendor', {
 		type: DataTypes.BOOLEAN,
 		allowNull: false
 	},
-	corrected: {
+	tech_stack: {
 		type: DataTypes.BOOLEAN,
-		allowNull: false
+		allowNull: true
 	}
 });

@@ -2,6 +2,10 @@ const puppeteer = require('puppeteer');
 const preparePageForTests = require('../utils/preparePageForTests');
 const fs = require('fs').promises;
 const interceptAllTrafficForPageUsingFetch = require('./interceptAllTrafficForPageUsingFetch');
+const db = require('../database/');
+const classes = require('../utils/classes');
+const JobUrlVendor = db.model('jobUrlVendor');
+
 /**
  * Launches a puppeteer controlled Chrome and intercepts all traffic.
  */
@@ -36,12 +40,18 @@ module.exports = async (advUrl, jobUrlId) => {
     });
 
    //Normal code like navigation, closing browser session, etc.
-    await page.goto(advUrl, {
-    	waitUntil: 'networkidle0',
-  	});
+   try {
+        await page.goto(advUrl, {
+        	waitUntil: 'networkidle2',
+      	});
+    } catch (e) {
+        await page.goto(advUrl, {
+            waitUntil: 'networkidle0',
+        });     
+    }
 
     // fragile way to click on accept cookies via button or link text
-    const [toClick] = await page.$x("//button[contains(text(), 'ccept')]|//a[contains(text(), 'ccept')]");
+    const [toClick] = await page.$x("//button[contains(text(), 'ccept') or contains(text(), 'CCEPT') or contains(text(), 'gree') or contains(text(), 'GREE')]|//a[contains(text(), 'ccept') or contains(text(), 'CCEPT') or contains(text(), 'gree') or contains(text(), 'GREE')]");
     let urlAcceptedCookies = false;
     if (toClick) {
         try {
@@ -49,12 +59,32 @@ module.exports = async (advUrl, jobUrlId) => {
             urlAcceptedCookies = true;
             console.log('clicked!');
         } catch(e) {
-            console.log(advUrl, 'couldn\'nt click accept cookies. either clicked already/hidden, or rendered too slow');
+            console.log(advUrl, 'couldn\'t click accept cookies. either clicked already/hidden, or rendered too slow');
         }
     } else {
         console.log('couldn\'t find an accept button or link')
     }
 
+    //check for mParticle
+    let mParticle;
+    try {
+        let mParticleVendor = await Vendor.findOne({
+            where: {
+                hostName: 'xxx.mparticle.xxx'
+            }
+        });
+
+        mParticle = await page.evaluate(() => mParticle);
+        let jobUrlVendor = new classes.JobUrlVendor(
+            null, //url
+            null, //responseDateTime
+            jobUrlId,
+            mParticleVendor.id //mParticle vendorId
+        )
+    } catch (e) {
+        console.log('mParticle not found');
+    }
+    
     //save cookies
     const cookies = await page.cookies();
     await fs.writeFile('./cookies.json', JSON.stringify(cookies, null, 2));

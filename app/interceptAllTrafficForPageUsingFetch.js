@@ -4,6 +4,7 @@ const classes = require('../utils/classes');
 const db = require('../database/');
 const JobUrl = db.model('jobUrl');
 const JobUrlVendor = db.model('jobUrlVendor');
+const T1Vendor = db.model('t1Vendor')
 const Vendor = db.model('vendor');
 const getDomain = require('../utils/getDomain');
 /**
@@ -28,59 +29,67 @@ module.exports = async (page, advUrl, jobUrlId) => {
             const responseDateHeader = responseHeaders.find(el => el.name === 'Date');
             //@TODO - why does this trigger invalid date error?
             const responseDateTime = responseDateHeader ? responseDateHeader.value : null;
-            let vendorDomain = getDomain(url);
-            let advDomain = getDomain(advUrl);
-
+            
+            let vendorDomain = getDomain(url, false);
+            let vendorHostName = getDomain(url, true);
+            let advDomain = getDomain(advUrl, false);
+            
             if (vendorDomain) {
                 try {
-                    //look for existing vendor
-                    let vendorRecord = await Vendor.findOne({
+                    //look for existing T1 vendor
+                    //check for vendor
+                    //if no vendor, check t1 for vendor
+                    //make new vendor record
+                    //or use existing record
+                    let vendorRecord = await (Vendor.findOne({
                         where: {
-                            domain: vendorDomain
+                            hostName: vendorHostName
                         }
-                    });
+                    }));
+                    
+                    let vendorId;
 
-                    //add vendor if missing
-                    if (!vendorRecord) {
-                        let party = 'third_party';
-                        if (advDomain === vendorDomain) party = 'first_party';
+                    if (vendorRecord) {
+                        console.log('found vendor!', vendorHostName)
+                        vendorId = vendorRecord.id;
+                    } else {
+                        let vendorName = 'TBD'
+                        let t1VendorId = null;
+                        let party = advDomain === vendorDomain ? 'first_party' : 'third_party';
+                        let vendorType = 'TBD'
+
+                        let t1VendorRecord = await T1Vendor.findOne({
+                            where: {
+                                domain: vendorDomain
+                            }
+                        });
+
+                        if (t1VendorRecord) {
+                            vendorName = t1VendorRecord.name
+                            t1VendorId = t1VendorRecord.t1Id
+                            vendorType = t1VendorRecord.type1
+                        }
+
                         let newVendor = new classes.Vendor(
-                            'TBD', //name
-                            vendorDomain,
-                            null, //t1Id
+                            vendorName, //name
+                            vendorHostName,
+                            t1VendorId, //t1Id
                             party, 
-                            'TBD', // type1
+                            vendorType, // type1
                             'TBD', // type2
                             'TBD', // type3
                             null, // note
-                            true, // current
-                            false // corrected
                         )
                         try {
-                            console.log('adding new vendor', vendorDomain)
+                            console.log('adding new vendor', vendorHostName)
                             vendorRecord = await Vendor.create(newVendor);
+                            vendorId = vendorRecord.id
                         } catch (e) {
-                            console.log('vendor already exists', vendorDomain)
-                        }
-                    } else {
-                        //mark as current (to filter out noise from t1 list)
-                        console.log('updating existing record')  
-                        if(!vendorRecord.current) {
-                            try {
-                                vendorRecord.current = true;
-                                await vendorRecord.save();
-                                console.log('vendor current saved!', vendorDomain)
-                            }
-                            catch (e) {
-                                console.log('could not save record', vendorDomain, e)
-                            }
+                            console.log('vendor already exists or error', vendorHostName);
                         }
                     }
 
-                    let jobUrlVendor;
-                    let vendorId = vendorRecord.id;
-
-                    jobUrlVendor = new classes.JobUrlVendor(
+                    let jobUrlVendor = new classes.JobUrlVendor(
                         //headers.Referer,
                         url,
                         responseDateTime,
