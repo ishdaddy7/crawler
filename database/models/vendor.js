@@ -15,14 +15,14 @@ module.exports = db.define('vendor', {
 		type: DataTypes.STRING,
 		allowNull: true
 	},
-	hostName: {
+	domain: {
 		type: DataTypes.STRING,
 		allowNull: false,
 		unique: true
 	},
 	t1Id: {
 		type: DataTypes.INTEGER,
-		allowNull: true
+		allowNull: false
 	},
 	party: {
 		type: DataTypes.ENUM('first_party', 'third_party'),
@@ -42,6 +42,14 @@ module.exports = db.define('vendor', {
 	},
 	note: {
 		type: DataTypes.STRING,
+		allowNull: true
+	},
+	current: {
+		type: DataTypes.BOOLEAN,
+		allowNull: false
+	},
+	tech_stack: {
+		type: DataTypes.BOOLEAN,
 		allowNull: true
 	}
 });

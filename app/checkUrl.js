@@ -40,12 +40,18 @@ module.exports = async (advUrl, jobUrlId) => {
     });
 
    //Normal code like navigation, closing browser session, etc.
-    await page.goto(advUrl, {
-    	waitUntil: 'networkidle0',
-  	});
+   try {
+        await page.goto(advUrl, {
+        	waitUntil: 'networkidle2',
+      	});
+    } catch (e) {
+        await page.goto(advUrl, {
+            waitUntil: 'networkidle0',
+        });     
+    }
 
     // fragile way to click on accept cookies via button or link text
-    const [toClick] = await page.$x("//button[contains(text(), 'ccept')]|//a[contains(text(), 'ccept')]");
+    const [toClick] = await page.$x("//button[contains(text(), 'ccept') or contains(text(), 'CCEPT') or contains(text(), 'gree') or contains(text(), 'GREE')]|//a[contains(text(), 'ccept') or contains(text(), 'CCEPT') or contains(text(), 'gree') or contains(text(), 'GREE')]");
     let urlAcceptedCookies = false;
     if (toClick) {
         try {

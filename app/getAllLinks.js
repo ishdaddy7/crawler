@@ -19,9 +19,18 @@ module.exports = async (jobUrlToCrawl, jobId) => {
   const page = await browser.newPage();
   await preparePageForTests(page);
   // open the page to scrape
-  await page.goto(jobUrlToCrawl, {
-      waitUntil: 'networkidle0',
-  });
+  
+  try {
+    console.log('trying networkidle2');
+    await page.goto(jobUrlToCrawl, {
+        waitUntil: 'networkidle2'
+    });
+  } catch(e) {
+    console.log('trying networkidle0')
+    await page.goto(jobUrlToCrawl, {
+      waitUntil: 'networkidle0'
+    });
+  }
 
   // execute the JS in the context of the page to get all the links
   const allLinks = await page.evaluate(() => 

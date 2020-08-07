@@ -16,7 +16,7 @@ module.exports = db.define('t1Vendor', {
 		allowNull: true
 	},
 	domain: {
-		type: DataTypes.STRING(1024),
+		type: DataTypes.STRING,
 		allowNull: false,
 		unique: true
 	},

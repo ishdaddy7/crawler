@@ -16,7 +16,7 @@ module.exports = db.define('jobUrl', {
 		allowNull: true
 	},
 	url: {
-		type: DataTypes.STRING(2048),
+		type: DataTypes.STRING,
 		allowNull: false		
 	},
 	acceptedCookies: {

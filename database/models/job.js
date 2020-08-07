@@ -27,12 +27,16 @@ module.exports = db.define('job', {
 		type: DataTypes.ENUM('Prospect', 'Customer', 'Target List', 'Other'),
 		allowNull: false		
 	},
+	jobTypeName: {
+		type: DataTypes.STRING,
+		allowNull: true
+	},
 	internalId: {
 		type: DataTypes.STRING,
 		allowNull: true
 	},
 	internalIdType: {
-		type: DataTypes.ENUM('SFDC', 'T1 Org', 'Other'),
+		type: DataTypes.ENUM('SFDC Opp', 'SFDC Account', 'T1 Org', 'Other'),
 		allowNull: true
 	},
 	status: {
