@@ -1,7 +1,6 @@
 # crawler
-I'm not a developer but sometimes write simple nodeJS scripts/apps to help with job-related tasks. 
+Hybrid personal/work project in to help with a job-related task. Detects what technology vendors are utilized by a given website. In short, it:
 
-This crawler was made in nodeJS to detect what technology vendors are utilized by a given website. In short, it:
 * Finds links on a given site
 * Loads a number of the pages/links
 * Attempts to click the "accept"/privacy notice to fully load the page content. 
